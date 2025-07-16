@@ -1,4 +1,4 @@
- <!-- Log in Modal  -->
+<!-- Log in Modal  -->
 <div
   class="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50"
   *ngIf="loginModal"
@@ -7,38 +7,83 @@
     <button
       class="absolute top-3 right-3 text-black-600 hover:text-gray-600 text-2xl font-bold"
       (click)="onCloseModal()"
-      aria-label="Close"> &times;
+      aria-label="Close"
+    >
+      &times;
     </button>
 
     <h2 class="text-3xl font-semibold text-center mb-6">Login</h2>
 
-    <form class="space-y-5">
+    <form class="space-y-5" [formGroup]="loginForm" (submit)="onSubmit()">
       <div>
-        <label class="block text-left text-sm font-medium mb-1" for="username">
-          Username
+        <label class="block text-left text-sm font-medium mb-1" for="email">
+          Email
         </label>
         <input
-          type="text"
-          id="username"
+          type="email"
+          id="email"
           class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          formControlName="email"
         />
+        <div
+          *ngIf="
+            loginForm.get('email')?.touched &&
+            !loginForm.get('email')?.valid &&
+            loginForm.get('email')?.errors?.['required']
+          "
+          class="text-red-400"
+        >
+          Email is required
+        </div>
+        <div
+          *ngIf="
+            loginForm.get('email')?.touched &&
+            !loginForm.get('email')?.valid &&
+            loginForm.get('email')?.errors?.['minlength']
+          "
+          class="text-red-400"
+        >
+          Email is too short
+        </div>
       </div>
 
       <div>
-        <label class="block text-left text-sm font-medium mb-1" for="password">
+        <label class="text-sm mb-1 block text-left font-medium" for="password">
           Password
         </label>
         <input
           type="password"
           id="password"
-          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          class="border-gray-300 w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          formControlName="password"
         />
+        <div
+          *ngIf="
+            loginForm.get('password')?.touched &&
+            !loginForm.get('password')?.valid &&
+            loginForm.get('password')?.errors?.['required']
+          "
+          class="text-red-400"
+        >
+          Password is required
+        </div>
+        <div
+          *ngIf="
+            loginForm.get('password')?.touched &&
+            !loginForm.get('password')?.valid &&
+            loginForm.get('password')?.errors?.['minlength']
+          "
+          class="text-red-400"
+        >
+          Password is too short
+        </div>
       </div>
 
       <div class="text-center">
         <button
           type="submit"
-          class="bg-[#265979] text-white px-6 py-2 rounded hover:bg-[#357399] transition w-full"
+          class="cursor-pointer disabled:cursor-default bg-[#265979] text-white px-6 py-2 rounded hover:bg-[#357399] disabled:bg-[#357399b6] transition w-full"
+          [disabled]="!loginForm.valid"
         >
           Login
         </button>
@@ -51,18 +96,21 @@
       <hr class="flex-grow border-gray-300" />
     </div>
 
-
     <div class="text-center mb-4">
       <button
         class="flex items-center justify-center w-full border border-gray-300 rounded px-4 py-2 hover:bg-gray-100 transition"
       >
-        <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="h-5 w-5 mr-2" />
+        <img
+          src="https://www.svgrepo.com/show/475656/google-color.svg"
+          alt="Google"
+          class="h-5 w-5 mr-2"
+        />
         <span class="text-sm">Continue with Google</span>
       </button>
     </div>
 
     <p class="text-center text-sm text-gray-600">
-      New? 
+      New?
       <a href="#" class="text-blue-600 hover:underline ml-1">Sign up here</a>
     </p>
   </div>

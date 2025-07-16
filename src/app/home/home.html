@@ -1,0 +1,14 @@
+<div class="grid place-items-center h-screen">
+  <div class="animate-fade-in">
+    <img src="/logo.png" class="w-[150px] block mx-auto" alt="" />
+    <p class="text-xl mt-6">Take control of your money, One click at a time</p>
+    <button
+      class="start-button w-32 text-white px-4 py-2 rounded-2xl text-center text-xl mx-auto block mt-6 bg-[#265979] hover:bg-[#357399] transition duration-300"
+      (click)="signInModal()"
+    >
+      Start
+    </button>
+  </div>
+</div>
+
+<app-login-modal (closeModal)="closeModal($event)" [loginModal]="loginModal" />
