@@ -21,22 +21,3 @@
 .animate-fade-in {
   animation: fadeIn 1.5s ease-out forwards;
 }
-.start-button {
-  position: relative;
-  background-color: #22577A; 
-  padding: 0.75rem 2rem;
-  font-size: 1.25rem;
-  border: none;
-  cursor: pointer;
-  clip-path: polygon(
-    0 0,
-    100% 0,
-    100% calc(100% - 15px),
-    calc(100% - 15px) 100%,
-    0 100%
-  );
-}
-.start-button:hover {
-  background-color: #357399; 
-}
-
