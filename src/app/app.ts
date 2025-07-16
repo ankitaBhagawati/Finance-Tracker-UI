@@ -1,12 +1,21 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+   imports: [CommonModule],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrls: ['./app.css'],
 })
 export class App {
-  protected readonly title = signal('finance-tracker-frontend');
+  loginModal = false;
+
+  signInModal() {
+    console.log('Modal should open');
+    this.loginModal = true;
+  }
+
+  closeModal() {
+    this.loginModal = false;
+  }
 }
