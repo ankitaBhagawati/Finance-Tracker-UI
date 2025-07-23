@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+
 import {
   HttpClient,
   provideHttpClient,
@@ -13,11 +14,12 @@ import {
   Validators,
 } from '@angular/forms';
 import { environment } from '@env';
+import { SignUpModal } from "../signUp-modal/signUp-modal";
 
 @Component({
   selector: 'app-login-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, SignUpModal],
   templateUrl: './login-modal.component.html',
   styleUrl: './login-modal.component.css',
 })
@@ -25,6 +27,13 @@ export class LoginModalComponent {
   @Input({ required: true }) loginModal = false;
   @Output()
   closeModal = new EventEmitter<boolean>();
+  showSignUp= false;
+  showSuccessMsg=false;
+  @Output() openSignUp = new EventEmitter<void>();
+  
+  signUp(){
+  this.openSignUp.emit();
+  }
 
   loginForm: FormGroup;
 
@@ -63,6 +72,10 @@ export class LoginModalComponent {
 
           localStorage.setItem('finance_token', token.substring(7))
           this.closeModal.emit(true);
+          this.showSuccessMsg = true;
+          setTimeout(() => {
+            this.showSuccessMsg = false;
+          }, 3000);
         },
         error: (err) => {
           console.error(err);

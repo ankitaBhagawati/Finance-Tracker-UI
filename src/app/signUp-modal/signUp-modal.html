@@ -1,0 +1,69 @@
+<div
+  class="h-full w-full flex justify-center items-center bg-white animate-slideIn p-10"
+  *ngIf="signUpForm"
+>
+  <div class="w-full max-w-md shadow-xl rounded-xl p-8 bg-white">
+    <h2 class="text-3xl font-semibold text-center mb-6">Create Account</h2>
+
+    <form class="space-y-5" [formGroup]="signUpForm" (submit)="onSubmit()">
+      <div>
+        <label class="block text-sm font-medium mb-1" for="name">Name</label>
+        <input
+          type="text"
+          id="name"
+          formControlName="name"
+          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <div *ngIf="signUpForm.get('name')?.touched && signUpForm.get('name')?.errors" class="text-red-400 text-sm mt-1">
+          <span *ngIf="signUpForm.get('name')?.errors?.['required']">Name is required</span>
+          <span *ngIf="signUpForm.get('name')?.errors?.['minlength']">Name is too short</span>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1" for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <div *ngIf="signUpForm.get('email')?.touched && signUpForm.get('email')?.errors" class="text-red-400 text-sm mt-1">
+          <span *ngIf="signUpForm.get('email')?.errors?.['required']">Email is required</span>
+          <span *ngIf="signUpForm.get('email')?.errors?.['minlength']">Email is too short</span>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1" for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <div *ngIf="signUpForm.get('password')?.touched && signUpForm.get('password')?.errors" class="text-red-400 text-sm mt-1">
+          <span *ngIf="signUpForm.get('password')?.errors?.['required']">Password is required</span>
+          <span *ngIf="signUpForm.get('password')?.errors?.['minlength']">Password is too short</span>
+        </div>
+      </div>
+
+      <div class="pt-2 space-y-2">
+        <button
+          type="submit"
+          [disabled]="!signUpForm.valid"
+          class="w-full bg-[#265979] text-white py-2 rounded hover:bg-[#357399] transition disabled:bg-[#357399b6] disabled:cursor-not-allowed"
+        >
+          Create Account
+        </button>
+        <button
+          type="button"
+          (click)="closeSignup()"
+          class="w-full bg-gray-200 text-gray-700 py-2 rounded hover:bg-gray-300 transition"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,33 +1,36 @@
+import { Injectable } from '@angular/core';
+import { CanActivate, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
-import { environment } from '@env';
-import { of, map, catchError } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { catchError, map, tap } from 'rxjs/operators';
+import { of, Observable } from 'rxjs';
+import { AuthService } from './services/auth.service';
 
-export const authGuard: CanActivateFn = (route, state) => {
-  const http = inject(HttpClient);
-  const router = inject(Router);
+@Injectable({
+  providedIn: 'root',
+})
+export class authGuard implements CanActivate {
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
-  const token = localStorage.getItem('finance_token');
+  canActivate(): Observable<boolean> {
+    return this.http
 
-  if (!token) {
-    router.navigate(['/']);
-    return of(false);
+      .get(`${environment.apiUrl}/auth/me`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('finance_token')}`,
+        },
+      })
+      .pipe(
+        tap((user) => this.authService.setUserDetails(user)),
+        map(() => true),
+        catchError(() => {
+          this.router.navigate(['/']);
+          return of(false);
+        })
+      );
   }
-
-  return http
-    .get(`${environment.apiUrl}/auth/me`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('finance_token')}`,
-      },
-    })
-    .pipe(
-      map(() => {
-        return true;
-      }),
-      catchError(() => {
-        router.navigate(['/']);
-        return of(false);
-      }),
-    );
-};
+}

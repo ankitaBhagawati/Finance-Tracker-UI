@@ -1,4 +1,5 @@
-<div class="grid place-items-center h-screen">
+
+<div *ngIf="!loginModal && !signUpView" class="grid place-items-center h-screen">
   <div class="animate-fade-in">
     <img src="/logo.png" class="w-[150px] block mx-auto" alt="" />
     <p class="text-xl mt-6">Take control of your money, One click at a time</p>
@@ -11,4 +12,24 @@
   </div>
 </div>
 
-<app-login-modal (closeModal)="closeModal($event)" [loginModal]="loginModal" />
+<app-login-modal
+  *ngIf="loginModal"
+  [loginModal]="loginModal"
+  (closeModal)="closeModal($event)"
+  (openSignUp)="openSignUpView()"
+></app-login-modal>
+
+
+<div *ngIf="signUpView" class="flex h-screen">
+  <div class="w-1/2 flex flex-col justify-center items-center animate-fade-in">
+    <img src="/logo.png" class="w-[150px]" alt="" />
+    <p class="text-xl mt-6 text-center max-w-[200]">
+      Take control of your money, One click at a time
+    </p>
+  </div>
+
+  <div class="w-1/2">
+    <app-signUp-modal (close)="closeSignUpModal()"></app-signUp-modal>
+  </div>
+</div>
+

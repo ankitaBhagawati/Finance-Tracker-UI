@@ -1,6 +1,5 @@
-<!-- Log in Modal  -->
 <div
-  class="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50"
+  class="login-fade-in fixed inset-0 bg-opacity-50 flex items-center justify-center z-50"
   *ngIf="loginModal"
 >
   <div class="bg-white p-8 rounded-xl shadow-2xl w-[500px] relative">
@@ -111,7 +110,12 @@
 
     <p class="text-center text-sm text-gray-600">
       New?
-      <a href="#" class="text-blue-600 hover:underline ml-1">Sign up here</a>
+      <a href="#" (click)="signUp()" class="text-blue-600 hover:underline ml-1">Sign up here</a>
     </p>
   </div>
+</div>
+
+<div *ngIf="showSuccessMsg"
+     class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded shadow-lg animate-fade-in">
+  Login successful!
 </div>
