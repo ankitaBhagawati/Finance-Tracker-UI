@@ -2,11 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { environment } from '@env';
-import { of, map, catchError } from 'rxjs';
+import { of, map, catchError, tap } from 'rxjs';
+import { AuthService } from './services/auth.service';
 
 export const authGuard: CanActivateFn = (route, state) => {
   const http = inject(HttpClient);
   const router = inject(Router);
+  const authService = inject(AuthService);
 
   const token = localStorage.getItem('finance_token');
 
@@ -22,6 +24,7 @@ export const authGuard: CanActivateFn = (route, state) => {
       },
     })
     .pipe(
+      tap((user) => authService.setUserDetails(user)),
       map(() => {
         return true;
       }),

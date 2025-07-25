@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+
 import {
   HttpClient,
   provideHttpClient,
@@ -13,6 +14,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { environment } from '@env';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login-modal',
@@ -25,10 +27,16 @@ export class LoginModalComponent {
   @Input({ required: true }) loginModal = false;
   @Output()
   closeModal = new EventEmitter<boolean>();
+  showSignUp= false;
+  @Output() openSignUp = new EventEmitter<void>();
+  
+  signUp(){
+  this.openSignUp.emit();
+  }
 
   loginForm: FormGroup;
 
-  constructor(private readonly http: HttpClient) {
+  constructor(private readonly http: HttpClient, private toastr: ToastrService) {
     this.loginForm = new FormGroup({
       email: new FormControl('', [
         Validators.required,
@@ -57,15 +65,16 @@ export class LoginModalComponent {
         next: (res) => {
           const token = res.headers.get('Authorization');
           if (!token || token.length === 0) {
-            console.error('Invalid login. You suck');
+            this.toastr.error('Invalid login. You suck');
             return;
           }
 
           localStorage.setItem('finance_token', token.substring(7))
           this.closeModal.emit(true);
+        this.toastr.success('Yay! Welcome to the hood!')
         },
         error: (err) => {
-          console.error(err);
+          this.toastr.error(err);
         },
       });
   }
