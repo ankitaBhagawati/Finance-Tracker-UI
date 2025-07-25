@@ -14,12 +14,11 @@ import {
   Validators,
 } from '@angular/forms';
 import { environment } from '@env';
-import { SignUpModal } from "../signUp-modal/signUp-modal";
 
 @Component({
   selector: 'app-login-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, SignUpModal],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './login-modal.component.html',
   styleUrl: './login-modal.component.css',
 })

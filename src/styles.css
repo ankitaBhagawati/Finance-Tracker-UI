@@ -6,6 +6,8 @@
 @theme{
     --font-sans: Geist, sans-serif;
     --color-primary: #0984E3;
+    --color-accent: #265979;
+    --color-accent-300: #357399;
 }
 @keyframes fadeIn {
   from {
