@@ -28,7 +28,7 @@ animateHeading() {
   ngOnInit() {
     const user = this.authService.getUserDetails();
     if (user) {
-     const fullName = user.name || user.username || 'User';
+     const fullName = user.name ?? user.username ?? 'User';
      this.userName = fullName.split(' ')[0];
     }
 
