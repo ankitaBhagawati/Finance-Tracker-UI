@@ -42,3 +42,26 @@
 .animate-slideIn {
   animation: slideIn 0.3s ease-out forwards;
 }
+
+.start-button {
+  position: relative;
+  background-color: #22577A; 
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - 15px),
+    calc(100% - 15px) 100%,
+    0 100%
+  );
+}
+.start-button:hover {
+  background-color: #357399; 
+}
+
