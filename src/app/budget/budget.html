@@ -1,0 +1,26 @@
+<div class="mx-auto container">
+  <p class="capitalize text-2xl font-medium text-center">
+    Power your month with a solid plan!
+  </p>
+
+  <div class="grid grid-cols-3">
+    <div
+      class="flex flex-col items-center justify-center p-4 rounded shadow-md h-[400px]"
+    >
+      <h4 class="text-xl font-light mb-4">Food</h4>
+      <div
+        class="text-2xl font-bold mx-auto w-max flex justify-center items-center"
+      >
+        <span class="">&#8377;</span>
+        <div
+          class="w-max p-2"
+          (input)="onInput($event)"
+          (keydown)="onKeyDown($event)"
+          contenteditable
+        >
+          {{ budgets.food }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
