@@ -1,34 +1,46 @@
-<div class="mx-auto container">
-  <p class="capitalize text-2xl font-medium text-center">
-    Power Your Month With A Solid Plan!
-  </p>
-</div>
+<div class="header-container">
+  <p class="title">Power Your Month With A Solid Plan!</p>
 
-<div class="grid grid-cols-5 gap-6 mt-8">
+  <!-- Month dropdown positioned near profile -->
+  <div class="month-dropdown-container">
+    <select class="month-select" [ngModel]="selectedMonth" (ngModelChange)="onMonthChange($event)">
+      <option *ngFor="let m of months" [ngValue]="m.value">{{ m.label }}</option>
+    </select>
+  </div>
+</div>
+<br>
+<br>
+
+
+<!-- Cards -->
+<div class="grid grid-cols-5 gap-6 mt-10 px-10" *ngIf="!loading">
   <div
     *ngFor="let cat of categories"
-    class="flex flex-col items-center justify-center p-4 rounded shadow-md h-[300px]"
+    class="flex flex-col items-center justify-center p-5 rounded shadow-md h-[260px] bg-white"
   >
-    <h4 class="text-xl font-light mb-4">
-      {{ cat.category_Name }}
-    </h4>
+    <h4 class="text-xl font-light mb-3">{{ cat.category_Name }}</h4>
 
     <div class="text-2xl font-bold flex items-center">
       <span>₹</span>
-<div
-  class="editable w-max p-2 outline-none"
-  contenteditable="true"
-  role="textbox"
-  [attr.data-empty]="budgets[cat.category_Id] === 0 ? 'true' : null"
-  [attr.aria-label]="'Budget for ' + cat.category_Name"
-  (focus)="onFocus($event, cat.category_Id)"
-  (blur)="onBlur($event, cat.category_Id)"
-  (keydown)="onKeyDown($event, cat)"
-  (input)="onInput($event, cat.category_Id)"
->
-  {{ budgets[cat.category_Id] > 0 ? budgets[cat.category_Id] : '' }}
-</div>
 
+      <div
+        class="editable w-max ml-1 p-2 outline-none border-b border-gray-300 min-w-[40px] text-center"
+        
+        contenteditable="true"
+
+        [attr.data-placeholder]="budgets[cat.category_Id] === 0 ? '0' : ''"
+
+        (focus)="onFocus($event, cat.category_Id)"
+        (blur)="onBlur($event, cat.category_Id)"
+        (keydown)="onKeyDown($event, cat)"
+        (input)="onInput($event, cat.category_Id)"
+      >
+        {{ budgets[cat.category_Id] > 0 ? budgets[cat.category_Id] : '' }}
+      </div>
     </div>
   </div>
+</div>
+
+<div *ngIf="loading" class="text-center mt-10 text-gray-500">
+  Loading...
 </div>

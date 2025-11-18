@@ -22,6 +22,48 @@ body {
   padding: 2.5rem 1.25rem;
 }
 
+.header-container {
+  position: relative;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 20px;
+  
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+/* Position dropdown at top-right near profile */
+.month-dropdown-container {
+  position: absolute;
+  top: 0;
+  right: 117px;
+}
+
+.month-select {
+  padding: 8px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: white;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.month-select:hover {
+  border-color: #6366f1;
+  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.15);
+}
+
+.month-select:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 4px rgba(79, 70, 229, 0.5);
+}
+
 .mx-auto.container > p {
   font-weight: 600;
   letter-spacing: 0.2px;
@@ -103,19 +145,29 @@ h4.text-xl {
   color: var(--muted);
   font-weight: 700;
   pointer-events: none;
+} 
+
+/* .editable:focus {
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
 }
+
+/* .editable[data-placeholder]:empty:before {
+  content: attr(data-placeholder);
+  color: #b4b4b4;
+  pointer-events: none;
+}
+
+.editable {
+  caret-color: black;
+} */
+
 
 .text-sm {
   margin-top: 1rem;
   color: var(--muted);
   font-size: 0.9rem;
 }
-
-.editable:focus {
-  outline: none;
-  -webkit-tap-highlight-color: transparent;
-}
-
 .has-value {
   border: 1px solid rgba(14,165,164,0.08);
 }
