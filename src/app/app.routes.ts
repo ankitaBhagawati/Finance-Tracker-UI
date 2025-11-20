@@ -3,6 +3,7 @@ import { Dashboard } from './dashboard/dashboard';
 import { Home } from './home/home';
 import { authGuard } from './auth-guard';
 import { Budget } from './budget/budget';
+import { Expense } from './expense/expense';
 import { DashboardLayout } from './dashboard-layout/dashboard-layout';
 
 export const routes: Routes = [
@@ -22,6 +23,10 @@ export const routes: Routes = [
       {
         path: 'budget',
         component: Budget
+      },
+            {
+        path: 'expense',
+        component: Expense
       }
     ]
   },

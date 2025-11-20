@@ -1,0 +1,94 @@
+<div class="header-container">
+  <p class="title">Where did my money go? Oh…here</p>
+</div>
+<div class="page-container">
+  <div class="header-row">
+    <div class="month-dropdown-container">
+    <select class="month-select">
+      <option *ngFor="let m of months" [ngValue]="m.value">{{ m.label }}</option>
+    </select>
+  </div>
+    <button class="expense-button w-32 text-white px-4 py-2 rounded-2xl text-center text-m mx-auto block mt-6 bg-accent hover:bg-accent-300 transition duration-300 font-size-15px" (click)="openAdd()">Add Expense</button>
+  </div>
+
+  <table class="expense-table">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Category</th>
+        <th>Amount</th>
+        <th>Description</th>
+        <th style="width:120px;">Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let exp of expenses">
+        <td>{{ exp.transaction_name }}</td>
+        <td>{{ exp.category_name }}</td>
+        <td>₹ {{ exp.amount }}</td>
+        <td>{{ exp.description || '—' }}</td>
+        <td class="actions">
+          <span class="icon edit" (click)="openEdit(exp)">✏️</span>
+          <span class="icon delete" (click)="openDelete(exp)">🗑️</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ADD / EDIT MODAL -->
+  <div class="modal-backdrop" *ngIf="isAddModalOpen || isEditModalOpen">
+    <div class="modal-box">
+      <h3>{{ isAddModalOpen ? 'Add Expense' : 'Edit Expense' }}</h3>
+
+      <form [formGroup]="expenseForm">
+
+        <label>Title</label>
+        <input type="text" formControlName="title">
+
+        <label>Category</label>
+<select formControlName="category_id" class="form-input">
+  <option value="" disabled>Select</option>
+  <option *ngFor="let c of categories" [value]="c.category_id">
+    {{ c.category_name }}
+  </option>
+</select>
+
+
+
+        <label>Amount</label>
+        <input type="number" formControlName="amount">
+
+        <label>Description</label>
+        <textarea rows="3" formControlName="description"></textarea>
+
+      </form>
+
+      <div class="modal-actions">
+        <button class="cancel" (click)="closeModals()">Cancel</button>
+
+        <button class="save" *ngIf="isAddModalOpen" (click)="submitAdd()">
+          Add
+        </button>
+
+        <button class="save" *ngIf="isEditModalOpen" (click)="submitUpdate()">
+          Update
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELETE CONFIRM MODAL -->
+  <div class="modal-backdrop" *ngIf="isDeleteModalOpen">
+    <div class="modal-box small">
+      <h3>Delete Expense?</h3>
+      <p>Are you sure you want to delete <b>{{ deleteTarget?.transaction_name }}</b>?</p>
+
+      <div class="modal-actions">
+        <button class="cancel" (click)="closeModals()">No</button>
+        <button class="delete-btn" (click)="confirmDelete()">Yes, Delete</button>
+      </div>
+    </div>
+  </div>
+
+</div>
