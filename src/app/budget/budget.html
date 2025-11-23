@@ -1,46 +1,201 @@
 <div class="header-container">
-  <p class="title">Power Your Month With A Solid Plan!</p>
+  <p class="title" style="font-size: 30px; margin-left: 37rem;">Power Your Month With A Solid Plan!</p>
 
-  <!-- Month dropdown positioned near profile -->
-  <div class="month-dropdown-container">
-    <select class="month-select" [ngModel]="selectedMonth" (ngModelChange)="onMonthChange($event)">
+  <!-- MONTH NAVIGATION -->
+  <div class="month-nav">
+    <button class="month-arrow" (click)="prevMonth()">&#8249;</button>
+
+    <select class="month-select"
+      [ngModel]="selectedMonth"
+      (ngModelChange)="onMonthChange($event)">
       <option *ngFor="let m of months" [ngValue]="m.value">{{ m.label }}</option>
     </select>
+
+    <button class="month-arrow" (click)="nextMonth()">&#8250;</button>
   </div>
 </div>
-<br>
-<br>
+<!-- + ICON (create category) -->
+<div class="add-category-row">
+  <button class="add-category-btn w-18 text-white px-4 py-2 rounded-2xl text-center text-m mx-auto block mt-6 bg-accent hover:bg-accent-300 transition duration-300" (click)="openNewCategoryModal()">+</button>
+</div> 
 
 
-<!-- Cards -->
-<div class="grid grid-cols-5 gap-6 mt-10 px-10" *ngIf="!loading">
-  <div
-    *ngFor="let cat of categories"
-    class="flex flex-col items-center justify-center p-5 rounded shadow-md h-[260px] bg-white"
-  >
-    <h4 class="text-xl font-light mb-3">{{ cat.category_Name }}</h4>
+<!-- TOP SUMMARY BAR -->
+<div class="summary-bar">
+  <div class="summary-item">
+    <label>Total Budget</label>
+    <p class="value">₹ {{ totalBudget }}</p>
+  </div>
 
-    <div class="text-2xl font-bold flex items-center">
-      <span>₹</span>
+  <div class="summary-item">
+    <label>Total Spent</label>
+    <p class="value spent">₹ {{ totalSpent }}</p>
+  </div>
 
-      <div
-        class="editable w-max ml-1 p-2 outline-none border-b border-gray-300 min-w-[40px] text-center"
-        
-        contenteditable="true"
+  <div class="summary-item">
+    <label>Remaining</label>
+    <p class="value remaining">₹ {{ totalBudget - totalSpent }}</p>
+  </div>
 
-        [attr.data-placeholder]="budgets[cat.category_Id] === 0 ? '0' : ''"
+  <div class="summary-progress">
+    <label>Usage</label>
+    <div class="progress-container">
+      <div class="progress-fill" [style.width.%]="(totalBudget ? (totalSpent / totalBudget) * 100 : 0)"></div>
+    </div>
+    <span class="percentage">
+      {{ ((totalBudget ? (totalSpent / totalBudget) : 0) * 100) | number:'1.0-0' }}%
+    </span>
+  </div>
+</div>
 
-        (focus)="onFocus($event, cat.category_Id)"
-        (blur)="onBlur($event, cat.category_Id)"
-        (keydown)="onKeyDown($event, cat)"
-        (input)="onInput($event, cat.category_Id)"
-      >
-        {{ budgets[cat.category_Id] > 0 ? budgets[cat.category_Id] : '' }}
+
+
+
+<!-- CATEGORY BUDGET CARDS -->
+<!-- HORIZONTAL SCROLL CARDS WRAPPER -->
+<div class="cards-scroll-section" *ngIf="!loading">
+
+  <!-- left arrow -->
+  <button class="scroll-btn left" (click)="scrollLeft()" [disabled]="!canScrollLeft">
+    ‹
+  </button>
+
+  <!-- visible viewport that shows 5 cards -->
+  <div #cardsContainer class="cards-viewport" (scroll)="onCardsScroll()">
+    <div class="cards-track">
+      <div *ngFor="let cat of categories" class="budget-card">
+        <!-- show delete only for non-default -->
+        <div class="card-actions" *ngIf="!isDefaultCategory(cat)">
+          <button class="delete-btn" (click)="openDeleteModal(cat)">🗑️</button>
+        </div>
+
+        <div class="cat-icon">{{ getIcon(cat.category_Name) }}</div>
+        <h4 class="cat-title">{{ cat.category_Name }}</h4>
+
+        <div class="amount-box">
+          <span class="rupee">₹</span>
+          <div class="editable"
+               contenteditable="true"
+               [attr.data-cat-id]="cat.category_Id"
+               (focus)="onFocus($event, cat.category_Id)"
+               (blur)="onBlur($event, cat.category_Id)"
+               (keydown)="onKeyDown($event, cat)"
+               (input)="onInput($event, cat.category_Id)">
+            {{ budgets[cat.category_Id] > 0 ? budgets[cat.category_Id] : '' }}
+          </div>
+        </div>
       </div>
     </div>
   </div>
+
+  <!-- right arrow -->
+  <button class="scroll-btn right" (click)="scrollRight()" [disabled]="!canScrollRight">
+    ›
+  </button>
 </div>
 
 <div *ngIf="loading" class="text-center mt-10 text-gray-500">
   Loading...
 </div>
+
+<!-- TWO DONUT CHARTS IN A GRID -->
+<!-- TWO PANEL: Left = Donut, Right = Gradient Horizontal Bars -->
+<div class="donut-grid">
+
+  <!-- BUDGET DONUT (left) -->
+  <div class="donut-box">
+    <h2 class="donut-title font-size: 26px; font-weight: 700; margin-bottom: 12px">Your Budget Breakdown</h2>
+    <canvas id="budgetDonut" style="margin-left: 110px"></canvas>
+  </div>
+
+<!-- EXPENSE BARS (right) -->
+<div class="donut-box bars-panel">
+  <h2 class="donut-title font-size: 26px; font-weight: 700; margin-bottom: 12px">Budget vs Spent</h2>
+
+  <div *ngIf="expenseBars && expenseBars.length; else noBars">
+    <div class="bars-list">
+
+      <div *ngFor="let b of expenseBars" class="bar-row">
+
+        <!-- LEFT SIDE: CATEGORY + AMOUNT -->
+        <div class="bar-row-left">
+          <div class="bar-label">{{ b.categoryName }}</div>
+
+          <div class="bar-values">
+            <small class="muted">₹{{ b.spent | number }}</small>
+            <small class="muted">/</small>
+            <small class="muted">₹{{ b.budget | number }}</small>
+          </div>
+        </div>
+
+        <!-- RIGHT SIDE: BAR + % -->
+        <div class="bar-row-right">
+
+          <!-- PROGRESS BAR -->
+          <div class="bar-track"
+               role="progressbar"
+               [attr.aria-valuenow]="b.percentExact"
+               aria-valuemin="0"
+               aria-valuemax="100">
+
+            <div class="bar-fill"
+                 [style.width.%]="b.fillWidth"
+                 [ngClass]="{ 'over': b.over }"
+                 [style.background]="
+                    b.over
+                    ? 'linear-gradient(90deg, #EF4444 0%, #DC2626 100%)'
+                    : 'linear-gradient(90deg, #14B8A6 0%, #84CC16 100%)'
+                 ">
+            </div>
+
+          </div>
+
+          <!-- % TEXT -->
+          <div class="bar-percent" [ngClass]="{ 'over-text': b.over }">
+            {{ b.displayPercentText }}
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <ng-template #noBars>
+    <div class="no-data">No expense data for this month</div>
+  </ng-template>
+</div>
+
+</div>
+
+
+
+<!-- NEW CATEGORY MODAL -->
+<div class="modal-backdrop" *ngIf="categoryModalOpen">
+  <div class="modal">
+
+    <label>Category Name <span class="required">*</span></label>
+    <input type="text" [(ngModel)]="newCategoryName" placeholder="Enter Category" />
+
+    <div class="modal-actions">
+      <button class= "createBtn text-white px-4 py-2 rounded-2xl text-center text-m mx-auto block bg-accent hover:bg-accent-300 transition duration-300"(click)="createCategory()" [disabled]="creatingCategory || !newCategoryName.trim()">Create</button>
+      <button class="ghost" (click)="closeNewCategoryModal()">Cancel</button>
+    </div>
+
+    <div *ngIf="createError" class="error">{{ createError }}</div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRMATION MODAL -->
+<div class="delete-modal-backdrop" *ngIf="deleteModalOpen">
+  <div class="delete-modal">
+    <h3>Are you sure?</h3>
+    <p>You want to delete category "<b>{{ categoryToDelete?.category_Name }}</b>"?</p>
+
+    <div class="delete-actions">
+      <button class="yes-btn" (click)="confirmDelete()">Yes</button>
+      <button class="no-btn" (click)="closeDeleteModal()">No</button>
+    </div>
+  </div>
+</div>
+
